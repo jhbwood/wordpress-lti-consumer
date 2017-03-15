@@ -86,6 +86,7 @@ function sb_lti_content_inner_custom_box($lti_content) {
     $secret_key = get_post_meta($lti_content->ID, '_lti_meta_secret_key', true);
     $display = get_post_meta($lti_content->ID, '_lti_meta_display', true);
     $action = get_post_meta($lti_content->ID, '_lti_meta_action', true);
+    $context_title = get_post_meta($lti_content->ID, '_lti_meta_context_title', true);
     $launch_url = get_post_meta($lti_content->ID, '_lti_meta_launch_url', true);
     $configuration_url = get_post_meta($lti_content->ID, '_lti_meta_configuration_url', true);
     $return_url = get_post_meta($lti_content->ID, '_lti_meta_return_url', true);
@@ -132,6 +133,11 @@ function sb_lti_content_inner_custom_box($lti_content) {
         <label>Button <input type="radio" <?php checked($action, 'button'); ?> id="lti_content_field_action_button" name="lti_content_field_action" value="button" /></label><br>
         <label>Link <input type="radio" <?php checked($action, 'link'); ?> id="lti_content_field_action_link" name="lti_content_field_action" value="link"  /></label>
       </td>
+    </tr>
+
+    <tr>
+      <th><label for="lti_content_context_title"><?php echo _e( "Context Title", 'lti-consumer' ); ?></label></th>
+      <td><input type="text" id="lti_content_context_title" name="lti_content_context_title" value="<?php echo esc_attr( $context_title ); ?>" size="35" /></td>
     </tr>
 
     <tr>
@@ -206,6 +212,7 @@ function sb_lti_content_save_post($post_id) {
     $secret_key = sanitize_text_field($_POST['lti_content_field_secret_key']);
     $display = sanitize_text_field($_POST['lti_content_field_display']);
     $action = sanitize_text_field($_POST['lti_content_field_action']);
+    $context_title = sanitize_text_field($_POST['lti_content_context_title']);
     $launch_url = esc_url_raw($_POST['lti_content_field_launch_url']);
     $configuration_url = esc_url_raw($_POST['lti_content_field_configuration_url']);
     $return_url = esc_url_raw($_POST['lti_content_field_return_url']);
@@ -216,6 +223,7 @@ function sb_lti_content_save_post($post_id) {
     update_post_meta($post_id, '_lti_meta_secret_key', $secret_key);
     update_post_meta($post_id, '_lti_meta_display', $display);
     update_post_meta($post_id, '_lti_meta_action', $action);
+    update_post_meta($post_id, '_lti_meta_context_title', $context_title);
     update_post_meta($post_id, '_lti_meta_launch_url', $launch_url);
     update_post_meta($post_id, '_lti_meta_configuration_url', $configuration_url);
     update_post_meta($post_id, '_lti_meta_return_url', $return_url);
@@ -473,6 +481,7 @@ function sb_lti_launch_process($attrs) {
                 $consumer_secret = get_post_meta($lti_content->ID, '_lti_meta_secret_key', true);
                 $display = get_post_meta($lti_content->ID, '_lti_meta_display', true);
                 $action = get_post_meta($lti_content->ID, '_lti_meta_action', true);
+                $context_title = get_post_meta($lti_content->ID, '_lti_meta_context_title', true);
                 $launch_url = get_post_meta($lti_content->ID, '_lti_meta_launch_url', true);
                 $configuration_url = get_post_meta($lti_content->ID, '_lti_meta_configuration_url', true);
                 if ( $configuration_url === "" ) {
@@ -545,6 +554,12 @@ function sb_lti_launch_process($attrs) {
             $action = $attrs['action'];
         } else if ( !isset($action) )  {
             $action = 'button';
+        }
+
+        if ( array_key_exists('context_title', $attrs) ) {
+            $parameters['context_title'] = $attrs['context_title'];
+        } else if ( isset($context_title) && $context_title ) {
+            $parameters['context_title'] = $context_title;
         }
 
         $parameters = sb_package_launch(
