@@ -49,7 +49,7 @@ add_filter('page_row_actions', 'Saltbox\sb_add_shortcode_generator_link', 10, 2)
 function sb_add_shortcode_generator_link($actions, $post) {
     if ( $post->post_type == 'lti_launch' ) {
         unset($actions['view']);
-        $actions['shortcode_generator'] = 'Shortcode: [lti-launch id=' . $post->post_name . ']';
+        $actions['shortcode_generator'] = '<a href="javascript:prompt(\'Copy this shortcode and paste it into the text of a post or page:\', \'[lti-launch id=' . $post->post_name . ']\')">Shortcode: [lti-launch id=' . $post->post_name . ']</a>';
     }
 
     return $actions;
