@@ -375,12 +375,25 @@ function sb_add_resource_link_id_if_not_present($shortcode) {
 /*
  * Utilities
  */
+function munge_roles($roles) {
+    switch(current($roles)) {
+        case 'administrator': 
+            return 'Administrator';
+        case 'editor':
+        case 'author': 
+            return 'Instructor';
+        default: 
+            return 'Learner';
+    }
+}
+
 function sb_extract_user_id() {
     // Find some relevant information about the current user
     $current_user = wp_get_current_user();
 
     return array(
         'user_id' => $current_user->ID,
+        'roles' => munge_roles($current_user->roles),
         'lis_person_contact_email_primary' => $current_user->user_email,
         'lis_person_name_given' => $current_user->user_firstname,
         'lis_person_name_family' => $current_user->user_lastname,
