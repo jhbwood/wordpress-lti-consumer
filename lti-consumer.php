@@ -33,12 +33,12 @@ function sb_create_lti_post_type_func() {
                 'not_found_in_trash' => __('No LTI content found in Trash'),
             ),
             'description' => __('An LTI-compatible tool for content launch'),
-            'publicly_queryable' => true,
-            'public' => true,
-            'has_archive' => true,
+            'exclude_from_search' => true,
+            'publicly_queryable' => false,
+            'show_in_nav_menus' => true,
+            'show_ui' => true,        
             'supports' => array(
                 'title',
-                'editor',
             ),
         )
     );
@@ -49,7 +49,7 @@ add_filter('page_row_actions', 'Saltbox\sb_add_shortcode_generator_link', 10, 2)
 function sb_add_shortcode_generator_link($actions, $post) {
     if ( $post->post_type == 'lti_launch' ) {
         unset($actions['view']);
-        $actions['shortcode_generator'] = '<a href="javascript:prompt(\'Copy this shortcode and paste it into the text of a post or page:\', \'[lti-launch id=' . $post->post_name . ']\')">Shortcode: [lti-launch id=' . $post->post_name . ']</a>';
+        $actions['shortcode_generator'] = '<a href="javascript:void(0)" onclick="prompt(\'Copy this shortcode and paste it into the text of a post or page:\', \'[lti-launch id=' . $post->post_name . ']\')">Shortcode: [lti-launch id=' . $post->post_name . ']</a>';
     }
 
     return $actions;
@@ -63,7 +63,9 @@ function sb_lti_content_meta_box() {
         'lti_content_custom_section_id',
         __('LTI launch settings', 'lti-consumer'),
         'Saltbox\sb_lti_content_inner_custom_box',
-        'lti_launch'
+        'lti_launch',
+        'normal',
+        'high'
     );
 }
 
