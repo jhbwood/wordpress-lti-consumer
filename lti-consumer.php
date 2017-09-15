@@ -3,8 +3,8 @@
  * Plugin Name: LTI-compatible consumer
  * Plugin URI:
  * Description: An LTI-compatible launching plugin for Wordpress.
- * Version: 0.4.3
- * Author: John Weaver <john.weaver@saltbox.com>
+ * Version: 1.0.2
+ * Author: John Weaver and NowComment.com
  * License: GPLv3
  */
 
@@ -499,7 +499,9 @@ function sb_lti_launch_process($attrs) {
         if ( array_key_exists('resource_link_id', $attrs) ) {
             $parameters['resource_link_id'] = $attrs['resource_link_id'];
         } else {
-            return array('error' => 'You must specify the resource_link_id.');
+            $parameters['resource_link_id'] = 'wp_global_resource_link_id'; // assign a global resource link id if we can't find one
+            $parameters['context_id'] = 'wp_global_context';
+            // return array('error' => 'You must specify the resource_link_id.');
         }
 
         if ( array_key_exists('return_url', $attrs) ) {
