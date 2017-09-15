@@ -3,7 +3,7 @@
  * Plugin Name: LTI-compatible consumer
  * Plugin URI:
  * Description: An LTI-compatible launching plugin for Wordpress.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: John Weaver and NowComment.com
  * License: GPLv3
  */
@@ -457,7 +457,11 @@ function sb_determine_launch_url($configuration_url) {
 function sb_lti_launch_process($attrs) {
     // Reject launch for non-logged in users
     if ( !is_user_logged_in() ) {
-        return array('error' => 'You must be logged in to launch this content.');
+        if ( array_key_exists('logged_out', $attrs) && $attrs['logged_out'] != '' ) {
+            return array('error' => $attrs['logged_out']);
+        } else {
+            return array('error' => 'You must be logged in to launch this content.');
+        }
     } else {
         $parameters = array();
         // grab user information
